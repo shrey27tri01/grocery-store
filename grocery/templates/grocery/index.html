@@ -1,0 +1,118 @@
+{% extends "grocery/layout.html" %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+    <div class="container mt-5">
+        <!-- top -->
+        <form method="POST" action="{% url 'filter' %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-lg-6">
+                    <h1>View Grocery List</h1>
+                </div>
+                
+                    <div class="col-lg-6 float-right">
+                        <div class="row">
+                            <form>
+    
+                            </form>
+                            <div class="col-lg-8">
+                                <!-- Date Filtering-->
+                                {% if date %}
+                                    <input type="date" class="form-control" name="filter-date" value="{{ date }}" required>
+                                {% else %}
+                                    <input type="date" class="form-control" name="filter-date" required>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-4">
+                                <input type="submit" class="btn btn-danger" value="filter">
+                            </div>
+                        </div>
+                    </div>
+                <div class="col-lg-6">
+                    <a href="{% url 'add' %}">Add Item</a>
+                </div>
+            </div>
+        </form>
+        
+        <!-- // top -->
+        <!-- Grocery Cards -->
+        <div class="row mt-4">
+            <!--- -->
+            <!-- Loop This -->
+            {% for item in userItems %}
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.name }}</h5>
+                            <span class="item-id d-none">{{ item.id }}</span>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ item.amount }}</h6>
+                            {% if item.status == 'P' or item.status == "PENDING" %}
+                                <p class="text-info">PENDING</p>
+                            {% elif item.status == 'B' or item.status == "BOUGHT" %}
+                                <p class="text-success">BOUGHT</p>
+                            {% elif item.status == "NA" or item.status == "NOT AVAILABLE" %}
+                                <p class="text-danger">NOT AVAILABLE</p>
+                            {% endif %}
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-lg">
+                                        <form method="POST" action="{% url 'itemEdit' item.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="name" value="value" /> 
+                                            <a class="update-link" href="#" onclick="this.parentNode.submit();">Update</a>
+                                        </form>
+                                    </div>
+                                    <div class="col-lg">
+                                        <form method="POST" action="{% url 'delete' item.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="name" value="value" /> 
+                                            <a class="delete-link" href="#" onclick="alert('Are you sure?');this.parentNode.submit();">Delete</a>
+                                        </form>
+                                    </div>
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            
+            <!-- // Loop -->
+            <!-- <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                    <h5 class="card-title">Chicken</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">2Kgs</h6>
+                    <p class="text-danger">NOT AVAILABLE</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                    <h5 class="card-title">Posto</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">50gms</h6>
+                    <p class="text-info">PENDING</p>
+                    </div>
+                </div>
+            </div> -->
+
+        </div>
+    </div>
+
+{% else %}
+    <div class="center-text">
+        <p>All your grocery items at one place!</p>
+        <p>
+            <a class="nav-link" href="{% url 'login' %}">Login</a> or <a class="nav-link" href="{% url 'register' %}">Register</a> to get started!
+        </p>
+
+    </div>
+    
+{% endif %}
+
+
+{% endblock %}

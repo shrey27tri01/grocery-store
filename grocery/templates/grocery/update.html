@@ -1,0 +1,61 @@
+{% extends "grocery/layout.html" %}
+
+{% block title %}
+    Update List
+{% endblock %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+<div class="container mt-5">
+    <h1>Update Grocery List</h1>
+    <form method="GET" action="{% url 'itemEdit' itemId %}">
+        <div class="form-group">
+            <label>Item name</label>
+            <input type="text" class="form-control" placeholder="Item name" name="name" value="{{ itemName }}"/>
+        </div>
+        <div class="form-group">
+            <label>Item quantity</label>
+            <input type="text" class="form-control" placeholder="Item quantity" name="quantity" value="{{ itemAmount }}"/>
+        </div>
+        <div class="form-group">
+            <label>Item status</label>
+            <select class="form-control" name="status" required>
+                {% if itemStatus == 'P' or itemStatus == "PENDING" %}
+                    <option selected>PENDING</option>
+                    <option>BOUGHT</option>
+                    <option>NOT AVAILABLE</option>
+                {% elif itemStatus == 'B' or itemStatus == "BOUGHT" %}
+                    <option>PENDING</option>
+                    <option selected>BOUGHT</option>
+                    <option>NOT AVAILABLE</option>
+                {% elif itemStatus == "NA" or itemStatus == "NOT AVAILABLE" %}
+                    <option>PENDING</option>
+                    <option>BOUGHT</option>
+                    <option selected>NOT AVAILABLE</option>
+                {% endif %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Date</label>
+            <input type="date" class="form-control" placeholder="Date" name="date" value="{{ itemDate }}">
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Update" class="btn btn-danger">
+        </div>
+    </form>
+</div>
+    
+
+{% else %}
+    <div class="center-text">
+        <p>
+            <a class="nav-link" href="{% url 'login' %}">Login</a> or <a class="nav-link" href="{% url 'register' %}">Register</a> to visit this page!
+        </p>
+
+    </div>
+    
+{% endif %}
+
+
+{% endblock %}
